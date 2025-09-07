@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Content Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { background: #f8f9fa; padding: 10px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Content API Test</h1>
+    
+    <div class="test-section">
+        <h2>1. Test Content Fetch</h2>
+        <button onclick="fetchContent()">Fetch All Content</button>
+        <button onclick="fetchActiveContent()">Fetch Active Content Only</button>
+        <div id="fetchResult"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Test Content Creation</h2>
+        <button onclick="createTestContent()">Create Test Content</button>
+        <div id="createResult"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Check Current URL</h2>
+        <p>Current URL: <span id="currentUrl"></span></p>
+        <p>You should be on: <strong>http://localhost:3000</strong> (not /admin)</p>
+    </div>
+
+    <script>
+        document.getElementById('currentUrl').textContent = window.location.href;
+        
+        async function fetchContent() {
+            try {
+                const response = await fetch('/api/content');
+                const data = await response.json();
+                document.getElementById('fetchResult').innerHTML = 
+                    `<div class="success">
+                        <h3>Success! Found ${data.length} content items:</h3>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>`;
+            } catch (error) {
+                document.getElementById('fetchResult').innerHTML = 
+                    `<div class="error">
+                        <h3>Error fetching content:</h3>
+                        <pre>${error.message}</pre>
+                    </div>`;
+            }
+        }
+        
+        async function fetchActiveContent() {
+            try {
+                const response = await fetch('/api/content?activeOnly=true');
+                const data = await response.json();
+                document.getElementById('fetchResult').innerHTML = 
+                    `<div class="success">
+                        <h3>Success! Found ${data.length} active content items:</h3>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>`;
+            } catch (error) {
+                document.getElementById('fetchResult').innerHTML = 
+                    `<div class="error">
+                        <h3>Error fetching active content:</h3>
+                        <pre>${error.message}</pre>
+                    </div>`;
+            }
+        }
+        
+        async function createTestContent() {
+            try {
+                const testContent = {
+                    type: 'hero',
+                    title: 'Test Hero Section',
+                    subtitle: 'This is a test subtitle',
+                    description: 'This is a test description for the hero section',
+                    media: {
+                        type: 'image',
+                        url: '/lv-trainer-front.avif',
+                        alt: 'Test image',
+                        poster: ''
+                    },
+                    buttonText: 'Shop Now',
+                    buttonLink: '/shop',
+                    isActive: true,
+                    order: 1,
+                    settings: {
+                        overlayOpacity: 0.4,
+                        textColor: '#ffffff',
+                        backgroundColor: '',
+                        animation: 'fade',
+                        layout: 'default'
+                    }
+                };
+                
+                const response = await fetch('/api/content', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testContent)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('createResult').innerHTML = 
+                        `<div class="success">
+                            <h3>Success! Content created:</h3>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>`;
+                } else {
+                    document.getElementById('createResult').innerHTML = 
+                        `<div class="error">
+                            <h3>Error creating content:</h3>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>`;
+                }
+            } catch (error) {
+                document.getElementById('createResult').innerHTML = 
+                    `<div class="error">
+                        <h3>Error creating content:</h3>
+                        <pre>${error.message}</pre>
+                    </div>`;
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

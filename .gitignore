@@ -1,0 +1,20 @@
+﻿# Node\_modules
+node_modules/
+# Next build
+.next/
+# Logs
+*.log
+# Env files
+.env*
+.env.local
+# Dist
+dist/
+# Out
+out/
+# OS
+*.DS_Store
+# Vercel
+.vercel/
+# IDE
+.vscode/
+

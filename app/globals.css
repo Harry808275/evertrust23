@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  /* Brand palette (LV-like): deep black, warm ivory, classic gold */
+  --brand-black: #0a0a0a;
+  --brand-ivory: #f8f5ef;
+  --brand-gold: #c8a24a;
+  --brand-gold-dark: #a68433;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-cormorant);
+  
+  /* Container customization */
+  --container-padding: 1.25rem; /* small side margin */
+  --container-max-width: 1200px;
+  
+  /* Spacing scale */
+  --spacing-18: 4.5rem;
+  --spacing-22: 5.5rem;
+  --spacing-26: 6.5rem;
+  --spacing-30: 7.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+}
+
+/* Custom container styles */
+.container {
+  width: 100%;
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-cormorant), serif;
+  letter-spacing: -0.02em; /* tight tracking */
+}
+
+/* Font utility classes */
+.font-heading {
+  font-family: var(--font-cormorant), serif;
+}
+
+.font-body {
+  font-family: var(--font-inter), sans-serif;
+}
+
+/* Editorial utilities */
+.tracking-tight-luxe { letter-spacing: -0.02em; }
+.editorial-strong { font-weight: 600; }
+
+/* Ultra‑minimal UI chrome */
+.ui-border-min { border-color: #e5e7eb; }
+.ui-muted { color: #6b7280; }
+
+/* Brand utilities */
+.brand-bg { background-color: var(--brand-ivory); }
+.brand-text { color: var(--brand-black); }
+.brand-accent { color: var(--brand-gold); }
+.brand-accent-bg { background-color: var(--brand-gold); }
+.brand-accent-border { border-color: var(--brand-gold); }
+.brand-accent-hover:hover { color: var(--brand-gold-dark); }
+.brand-cta {
+  background-color: var(--brand-black);
+  color: #fff;
+}
+.brand-cta:hover { background-color: #1a1a1a; }
+.brand-badge {
+  background-color: var(--brand-gold);
+  color: #fff;
+}
+
+/* Subtle micro‑interactions */
+.micro-anim { transition: all .25s ease; }
+.hover-lift:hover { transform: translateY(-2px); }
+.hover-dim:hover { opacity: .9; }
+
+/* Large imagery helpers */
+.img-hero { width: 100%; height: auto; object-fit: cover; }
