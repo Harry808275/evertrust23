@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 export default function TermsOfService() {
   return (
     <div className="min-h-screen bg-white pt-24">
@@ -7,7 +9,7 @@ export default function TermsOfService() {
         {/* Breadcrumbs */}
         <nav className="font-body text-sm text-gray-500 mb-6" aria-label="Breadcrumb">
           <ol className="list-none p-0 inline-flex gap-2">
-            <li><a href="/" className="hover:text-black">Home</a></li>
+            <li><Link href="/" className="hover:text-black">Home</Link></li>
             <li>/</li>
             <li className="text-black">Policies</li>
           </ol>
@@ -35,6 +37,8 @@ export default function TermsOfService() {
     </div>
   );
 }
+
+
 
 
 

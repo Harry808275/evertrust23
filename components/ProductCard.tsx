@@ -2,9 +2,11 @@
 
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Heart } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { ProductImage } from '@/components/ui/OptimizedImage';
+import { useToastHelpers } from '@/components/ui/Toast';
 
 interface ProductCardProps {
   id: string;
@@ -31,6 +33,8 @@ export default function ProductCard({
 }: ProductCardProps) {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const { success, error } = useToastHelpers();
+  const router = useRouter();
 
   // Validate image URL and provide fallback
   const validImage = image && image.trim() !== '' ? image : '/lv-trainer-front.avif';
@@ -38,12 +42,22 @@ export default function ProductCard({
   const handleWishlistToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsWishlisted(!isWishlisted);
+    const newWishlistState = !isWishlisted;
+    setIsWishlisted(newWishlistState);
     onWishlistToggle?.(id);
+    
+    // Show toast notification
+    if (newWishlistState) {
+      success('Added to wishlist', `${name} has been added to your wishlist`);
+    } else {
+      success('Removed from wishlist', `${name} has been removed from your wishlist`);
+    }
   };
 
+  const productHref = `/product/${id}`;
+
   return (
-    <Link href={`/product/${id}`} className="block group">
+    <Link href={productHref} className="block group" onMouseEnter={() => router.prefetch(productHref)}>
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -54,14 +68,15 @@ export default function ProductCard({
         onHoverEnd={() => setIsHovered(false)}
       >
         {/* Product Image Container */}
-        <div className={`relative bg-gray-100 ${compact ? 'aspect-square' : 'aspect-[3/4]'} ${compact ? 'mb-3' : 'mb-4'} overflow-hidden rounded-lg shadow-sm group-hover:shadow-md transition-shadow duration-300`}>
-          <Image
-            src={validImage}
-            alt={name}
-            fill
-            sizes={compact ? '(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw' : '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'}
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
-          />
+        <div className={`relative bg-gray-100 ${compact ? 'aspect-square' : 'aspect-[3/4]'} ${compact ? 'mb-3' : 'mb-4'} overflow-hidden rounded-lg shadow-professional group-hover:shadow-professional-lg transition-all duration-300 hover-lift`}>
+          {/* Absolutely position inner image to ensure it fills card */}
+          <div className="absolute inset-0">
+            <ProductImage
+              src={validImage}
+              alt={name}
+              className="group-hover:scale-105 transition-transform duration-500"
+            />
+          </div>
 
           {/* Hover Effects */}
           <motion.div

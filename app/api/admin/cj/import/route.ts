@@ -23,8 +23,12 @@ export async function POST(request: NextRequest) {
     const created: string[] = [];
     for (const cj of products) {
       const mapped = mapCjProductToLocal(cj);
-      const doc = new Product(mapped);
-      await doc.save();
+      // Upsert by externalProductId to avoid duplicates
+      const doc = await Product.findOneAndUpdate(
+        { externalProductId: mapped.externalProductId },
+        { $set: mapped },
+        { upsert: true, new: true }
+      );
       created.push(doc._id.toString());
     }
 
@@ -34,5 +38,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to import CJ products' }, { status: 500 });
   }
 }
+
 
 

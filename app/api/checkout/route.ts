@@ -16,7 +16,7 @@ interface CheckoutItem {
 export async function POST(request: NextRequest) {
   try {
     if (process.env.NODE_ENV !== 'production') {
-      console.log('Checkout API called');
+    console.log('Checkout API called');
     }
     
     // Check authentication
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     try {
       session = await getServerSession(authOptions);
       if (process.env.NODE_ENV !== 'production') {
-        console.log('Session check result:', session ? 'Found' : 'Not found');
+      console.log('Session check result:', session ? 'Found' : 'Not found');
       }
     } catch (authError) {
       console.error('Auth error:', authError);
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
 
     if (!session?.user) {
       if (process.env.NODE_ENV !== 'production') {
-        console.log('No session found - user not authenticated');
+      console.log('No session found - user not authenticated');
       }
       return NextResponse.json({ 
         error: 'Authentication required',
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (process.env.NODE_ENV !== 'production') {
-      console.log('Session found for user:', session.user.email);
+    console.log('Session found for user:', session.user.email);
     }
 
     const { items, successUrl, cancelUrl } = await request.json() as {
@@ -71,11 +71,11 @@ export async function POST(request: NextRequest) {
       // Ensure price is a valid number
       let unitAmount: number;
       if (typeof item.price === 'string') {
-        // Remove currency symbols and commas, then parse
-        const cleanPrice = item.price.replace(/[$,]/g, '');
+        // Remove all non-numeric (except dot) characters to handle varied formats
+        const cleanPrice = item.price.replace(/[^0-9.]/g, '');
         unitAmount = parseFloat(cleanPrice);
         if (process.env.NODE_ENV !== 'production') {
-          console.log(`Price parsing: "${item.price}" -> "${cleanPrice}" -> ${unitAmount}`);
+        console.log(`Price parsing: "${item.price}" -> "${cleanPrice}" -> ${unitAmount}`);
         }
       } else if (typeof item.price === 'number') {
         unitAmount = item.price;
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
 
       const formattedAmount = formatAmountForStripe(unitAmount, 'USD');
       if (process.env.NODE_ENV !== 'production') {
-        console.log(`Formatted amount for Stripe: ${unitAmount} -> ${formattedAmount}`);
+      console.log(`Formatted amount for Stripe: ${unitAmount} -> ${formattedAmount}`);
       }
 
       // Only include absolute image URLs for Stripe product_data
@@ -142,8 +142,8 @@ export async function POST(request: NextRequest) {
     });
 
     if (process.env.NODE_ENV !== 'production') {
-      console.log('Stripe session created:', checkoutSession.id);
-      console.log('Checkout URL:', checkoutSession.url);
+    console.log('Stripe session created:', checkoutSession.id);
+    console.log('Checkout URL:', checkoutSession.url);
     }
 
     if (!checkoutSession.url) {

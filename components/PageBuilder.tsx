@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useRef, useState } from 'react';
+import Link from 'next/link';
 import { Plus, GripVertical, Copy, Trash2, Save, Smartphone, Tablet, MonitorSmartphone } from 'lucide-react';
 
 export type BuilderDevice = 'desktop' | 'tablet' | 'mobile';
@@ -213,7 +214,13 @@ export default function PageBuilder() {
             <div className="text-center px-6">
               <h2 className="text-4xl md:text-6xl font-light mb-4">{s.title}</h2>
               {s.subtitle && <p className="text-lg opacity-80 mb-6">{s.subtitle}</p>}
-              {s.buttonText && <a href={s.buttonLink || '#'} className="inline-block bg-amber-500 text-black px-6 py-3">{s.buttonText}</a>}
+              {s.buttonText && (
+                s.buttonLink && s.buttonLink.startsWith('/') ? (
+                  <Link href={s.buttonLink} className="inline-block bg-amber-500 text-black px-6 py-3">{s.buttonText}</Link>
+                ) : (
+                  <a href={s.buttonLink || '#'} className="inline-block bg-amber-500 text-black px-6 py-3" target={s.buttonLink?.startsWith('http') ? '_blank' : undefined} rel={s.buttonLink?.startsWith('http') ? 'noreferrer' : undefined}>{s.buttonText}</a>
+                )
+              )}
             </div>
           )}
           {s.type === 'text' && (
@@ -350,6 +357,13 @@ export default function PageBuilder() {
     </div>
   );
 }
+
+
+
+
+
+
+
 
 
 

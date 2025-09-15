@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import ProductDetailClient from './ProductDetailClient';
+import { generateProductJsonLd } from '@/lib/structuredData';
 import dbConnect from '@/lib/mongodb';
 import Product from '@/models/Product';
 import { generateProductMetadata } from '@/lib/metadata';
@@ -38,3 +39,4 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   const { slug } = await params;
   return <ProductDetailClient slug={slug} />;
 }
+

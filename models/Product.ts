@@ -8,6 +8,9 @@ export interface IProduct extends Document {
   category: string;
   stock: number;
   inStock: boolean;
+  externalSource?: 'CJ' | 'Manual' | string;
+  externalProductId?: string;
+  externalSkus?: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -51,6 +54,18 @@ const ProductSchema = new Schema<IProduct>(
       type: Boolean,
       default: true,
     },
+    externalSource: {
+      type: String,
+      index: true,
+    },
+    externalProductId: {
+      type: String,
+      index: true,
+    },
+    externalSkus: [{
+      type: String,
+      index: true,
+    }],
   },
   {
     timestamps: true,
@@ -70,6 +85,21 @@ ProductSchema.pre('save', function(next) {
 
 // Prevent multiple model initialization in development
 export default mongoose.models.Product || mongoose.model<IProduct>('Product', ProductSchema);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

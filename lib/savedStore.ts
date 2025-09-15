@@ -22,12 +22,15 @@ interface SavedStore {
   addSaved: (product: Product, size?: string, color?: string, quantity?: number) => void;
   removeSaved: (productId: string) => void;
   clearSaved: () => void;
+  setItemsFromServer?: (products: Product[]) => void;
 }
 
 export const useSavedStore = create<SavedStore>()(
   persist(
     (set) => ({
       items: [],
+      setItemsFromServer: (products: Product[]) =>
+        set(() => ({ items: products.map((p) => ({ ...p, quantity: 1 })) })),
       addSaved: (product, size, color, quantity = 1) =>
         set((state) => {
           const exists = state.items.find(
@@ -56,6 +59,9 @@ export const useSavedStore = create<SavedStore>()(
     { name: 'saved-for-later' }
   )
 );
+
+
+
 
 
 

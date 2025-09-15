@@ -74,6 +74,12 @@ export default function AccountPage() {
       <div className="container mx-auto px-6 py-8">
         <h1 className="font-heading text-4xl md:text-5xl font-light text-black mb-8 tracking-wide">My Account</h1>
 
+        {/* Quick nav */}
+        <div className="flex gap-3 mb-6">
+          <Link href="/account/addresses" className="px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">Addresses</Link>
+          <Link href="/account/saved" className="px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">Saved</Link>
+        </div>
+
         {/* Profile summary */}
         <div className="bg-gray-50 rounded-lg border border-gray-200 p-6 mb-10">
           <p className="font-body text-gray-800"><span className="text-gray-500">Name:</span> {session.user?.name || '—'}</p>

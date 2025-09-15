@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 export default function AboutPage() {
   return (
@@ -9,7 +10,7 @@ export default function AboutPage() {
         {/* Breadcrumbs */}
         <nav className="font-body text-sm text-gray-500 mb-6" aria-label="Breadcrumb">
           <ol className="list-none p-0 inline-flex gap-2">
-            <li><a href="/" className="hover:text-black">Home</a></li>
+            <li><Link href="/" className="hover:text-black">Home</Link></li>
             <li>/</li>
             <li className="text-black">About</li>
           </ol>
@@ -68,5 +69,6 @@ export default function AboutPage() {
     </div>
   );
 }
+
 
 

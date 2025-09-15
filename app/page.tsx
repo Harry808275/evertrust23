@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
 import { useEffect, useState } from 'react';
+import { useRecentStore } from '@/lib/recentStore';
+import { ProductGridSkeleton, HeroSkeleton } from '@/components/ui/Skeleton';
 
 interface Product {
   _id: string;
@@ -18,8 +20,33 @@ interface Product {
 
 export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [recentProducts, setRecentProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { recentIds } = useRecentStore();
+
+  // Fetch recent products
+  useEffect(() => {
+    const fetchRecentProducts = async () => {
+      if (recentIds.length === 0) return;
+      
+      try {
+        const response = await fetch('/api/products');
+        if (response.ok) {
+          const productsData = await response.json();
+          const allProducts: Product[] = Array.isArray(productsData) ? productsData : (productsData?.items ?? []);
+          
+          // Filter products that are in recentIds
+          const recent = allProducts.filter(product => recentIds.includes(product._id));
+          setRecentProducts(recent);
+        }
+      } catch (err) {
+        console.error('Error fetching recent products:', err);
+      }
+    };
+
+    fetchRecentProducts();
+  }, [recentIds]);
 
   // Fetch products from database
   useEffect(() => {
@@ -49,11 +76,17 @@ export default function HomePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-400 mx-auto mb-4"></div>
-          <p className="font-body text-lg text-gray-600">Loading...</p>
+      <div className="min-h-screen bg-white pt-24">
+        <HeroSkeleton />
+        <section className="py-24 px-6 bg-gray-50">
+          <div className="container mx-auto">
+            <div className="text-center mb-16">
+              <div className="h-12 bg-gray-200 rounded-lg w-96 mx-auto mb-6 animate-pulse"></div>
+              <div className="h-6 bg-gray-200 rounded-lg w-80 mx-auto animate-pulse"></div>
+            </div>
+            <ProductGridSkeleton count={8} />
         </div>
+        </section>
       </div>
     );
   }
@@ -75,7 +108,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-white pt-24">
+    <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <section className="relative h-screen bg-black flex items-center justify-center overflow-hidden">
         <video
@@ -86,7 +119,6 @@ export default function HomePage() {
           loop
           playsInline
           preload="metadata"
-          poster="/lv-trainer-front.avif"
         >
           <source src="/lv-hero.mp4" type="video/mp4" />
           Your browser does not support the video tag.
@@ -165,7 +197,6 @@ export default function HomePage() {
                     price={`$${product.price.toFixed(2)}`}
                     image={(product.images && product.images[0]) || ''}
                     category={product.category}
-                    description={product.description}
                     inStock={product.inStock}
                   />
                 </motion.div>
@@ -240,6 +271,49 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Recently Viewed Section */}
+      {recentProducts.length > 0 && (
+        <section className="py-24 px-6 bg-white">
+          <div className="container mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              viewport={{ once: true }}
+              className="text-center mb-16"
+            >
+              <h2 className="font-heading text-4xl md:text-5xl font-light text-black mb-6 tracking-wide">
+                Recently Viewed
+              </h2>
+              <p className="font-body text-lg text-gray-600 max-w-2xl mx-auto">
+                Continue exploring products you've recently viewed
+              </p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              {recentProducts.map((product, index) => (
+                <motion.div
+                  key={product._id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
+                  viewport={{ once: true }}
+                >
+                  <ProductCard
+                    id={product._id}
+                    name={product.name}
+                    price={`$${product.price.toFixed(2)}`}
+                    image={(product.images && product.images[0]) || ''}
+                    category={product.category}
+                    inStock={product.inStock}
+                  />
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Footer */}
       <footer className="bg-black text-white border-t border-gray-800 py-20">
         <div className="container mx-auto px-6">
@@ -255,16 +329,16 @@ export default function HomePage() {
             <div>
               <h4 className="font-heading text-lg font-medium text-white mb-6 tracking-wide">Quick Links</h4>
               <ul className="space-y-3">
-                <li><a href="/shop" className="font-body text-gray-300 hover:text-amber-400 transition-colors duration-300">Shop All</a></li>
-                <li><a href="/about" className="font-body text-gray-300 hover:text-amber-400 transition-colors duration-300">About</a></li>
-                <li><a href="/contact" className="font-body text-gray-300 hover:text-amber-400 transition-colors duration-300">Contact</a></li>
+                <li><Link href="/shop" className="font-body text-gray-300 hover:text-amber-400 transition-colors duration-300">Shop All</Link></li>
+                <li><Link href="/about" className="font-body text-gray-300 hover:text-amber-400 transition-colors duration-300">About</Link></li>
+                <li><Link href="/contact" className="font-body text-gray-300 hover:text-amber-400 transition-colors duration-300">Contact</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-heading text-lg font-medium text-white mb-6 tracking-wide">Customer Service</h4>
               <ul className="space-y-3">
-                <li><a href="/contact" className="font-body text-gray-300 hover:text-amber-400 transition-colors duration-300">Contact Us</a></li>
-                <li><a href="/shop" className="font-body text-gray-300 hover:text-amber-400 transition-colors duration-300">Shop</a></li>
+                <li><Link href="/contact" className="font-body text-gray-300 hover:text-amber-400 transition-colors duration-300">Contact Us</Link></li>
+                <li><Link href="/shop" className="font-body text-gray-300 hover:text-amber-400 transition-colors duration-300">Shop</Link></li>
               </ul>
             </div>
           </div>

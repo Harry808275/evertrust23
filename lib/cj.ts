@@ -25,6 +25,9 @@ export interface MappedProduct {
   images: string[];
   category: string;
   stock: number;
+  externalSource?: string;
+  externalProductId?: string;
+  externalSkus?: string[];
 }
 
 export function mapCjProductToLocal(product: CJProduct): MappedProduct {
@@ -42,6 +45,10 @@ export function mapCjProductToLocal(product: CJProduct): MappedProduct {
     images,
     category: product.categoryName || 'Accessories',
     stock: Math.max(0, Number(stock)),
+    externalSource: 'CJ',
+    externalProductId: product.id,
+    externalSkus: (product.variants || []).map(v => v.sku!).filter(Boolean),
   };
 }
+
 

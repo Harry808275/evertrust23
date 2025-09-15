@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import ProductCard from '@/components/ProductCard';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { ProductGridSkeleton } from '@/components/ui/Skeleton';
 
 interface Product {
   _id: string;
@@ -86,10 +87,13 @@ export default function ShopPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-400 mx-auto mb-4"></div>
-          <p className="font-body text-lg text-gray-600">Loading products...</p>
+      <div className="min-h-screen bg-white pt-24">
+        <div className="container mx-auto px-6 py-8">
+          <div className="text-center mb-12">
+            <div className="h-12 bg-gray-200 rounded-lg w-80 mx-auto mb-6 animate-pulse"></div>
+            <div className="h-6 bg-gray-200 rounded-lg w-64 mx-auto animate-pulse"></div>
+          </div>
+          <ProductGridSkeleton count={12} compact={true} />
         </div>
       </div>
     );

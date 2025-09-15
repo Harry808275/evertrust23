@@ -13,6 +13,8 @@ export interface IOrder extends Document {
   items: IOrderItem[];
   totalPrice: number;
   status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  externalOrderId?: string; // CJ order id
+  trackingUrl?: string;
   customerEmail?: string;
   customerPhone?: string;
   shippingAddress: {
@@ -126,6 +128,14 @@ const OrderSchema = new Schema<IOrder>(
       trim: true,
       maxlength: [500, 'Special instructions cannot be more than 500 characters'],
     },
+    externalOrderId: {
+      type: String,
+      index: true,
+    },
+    trackingUrl: {
+      type: String,
+      trim: true,
+    },
     privacyInstructions: {
       type: String,
       trim: true,
@@ -139,6 +149,16 @@ const OrderSchema = new Schema<IOrder>(
 
 // Prevent multiple model initialization in development
 export default mongoose.models.Order || mongoose.model<IOrder>('Order', OrderSchema);
+
+
+
+
+
+
+
+
+
+
 
 
 

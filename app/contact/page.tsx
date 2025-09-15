@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 
 export default function ContactPage() {
@@ -21,7 +22,7 @@ export default function ContactPage() {
         {/* Breadcrumbs */}
         <nav className="font-body text-sm text-gray-500 mb-3" aria-label="Breadcrumb">
           <ol className="list-none p-0 inline-flex gap-2">
-            <li><a href="/" className="hover:text-black">Home</a></li>
+            <li><Link href="/" className="hover:text-black">Home</Link></li>
             <li>/</li>
             <li className="text-black">Contact</li>
           </ol>
@@ -104,5 +105,6 @@ export default function ContactPage() {
     </div>
   );
 }
+
 
 

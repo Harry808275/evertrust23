@@ -60,18 +60,26 @@ export default function CartPage() {
       console.log('Checkout response status:', response.status);
       
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Checkout API error:', errorData);
-        
+        let errorPayload: any = {};
+        try {
+          errorPayload = await response.json();
+        } catch {
+          try {
+            errorPayload = await response.text();
+          } catch {}
+        }
+        console.error('Checkout API error:', errorPayload);
+
+        const serverError = typeof errorPayload === 'string' ? errorPayload : (errorPayload?.error || 'Checkout failed');
+        const serverDetails = typeof errorPayload === 'string' ? '' : (errorPayload?.details || '');
+
         if (response.status === 401) {
-          alert('Please sign in to continue with checkout');
+          alert(serverDetails || 'Please sign in to continue with checkout');
           window.location.href = '/auth/signin';
           return;
-        } else if (response.status === 500) {
-          alert('Checkout service is temporarily unavailable. Please try again later.');
-        } else {
-          throw new Error(errorData.error || 'Checkout failed');
         }
+
+        alert(serverDetails || serverError || 'Checkout failed');
         return;
       }
 

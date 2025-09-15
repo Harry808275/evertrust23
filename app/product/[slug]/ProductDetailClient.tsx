@@ -8,6 +8,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useRecentStore } from '@/lib/recentStore';
+import { generateBreadcrumbJsonLd, generateProductJsonLd } from '@/lib/structuredData';
 
 interface Product {
   _id: string;
@@ -145,18 +146,37 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
   return (
     <div className="min-h-screen bg-white pt-20">
       <div className="container mx-auto px-6">
+        {/* Structured data (Product + Breadcrumbs) */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(generateProductJsonLd({ ...product, slug })),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(
+              generateBreadcrumbJsonLd([
+                { name: 'Home', url: '/' },
+                { name: 'Shop', url: '/shop' },
+                { name: product.name, url: `/product/${slug}` },
+              ])
+            ),
+          }}
+        />
         <motion.nav initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="mb-8">
           <ol className="flex items-center space-x-2 text-sm text-gray-500">
             <li>
-              <a href="/" className="hover:text-amber-600 transition-colors">
+              <Link href="/" className="hover:text-amber-600 transition-colors">
                 Home
-              </a>
+              </Link>
             </li>
             <li>/</li>
             <li>
-              <a href="/shop" className="hover:text-amber-600 transition-colors">
+              <Link href="/shop" className="hover:text-amber-600 transition-colors">
                 Shop
-              </a>
+              </Link>
             </li>
             <li>/</li>
             <li className="text-black">{product.name}</li>
@@ -330,3 +350,4 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
     </div>
   );
 }
+

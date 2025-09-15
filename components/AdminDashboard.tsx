@@ -1866,6 +1866,29 @@ export default function AdminDashboard() {
 
                     <CJImporter onImported={async () => { await fetchProducts(); setSuccessMessage('CJ products imported successfully'); setTimeout(()=>setSuccessMessage(null), 2500); }} />
                   </div>
+
+                  {/* Sync Controls */}
+                  <div className="mt-8 max-w-2xl">
+                    <h3 className="font-heading text-xl font-medium text-black mb-3">Inventory & Price Sync</h3>
+                    <p className="font-body text-gray-600 mb-3">Trigger a background sync to refresh inventory and prices from CJ.</p>
+                    <button
+                      onClick={async ()=>{
+                        try {
+                          setIsLoading(true);
+                          const res = await fetch('/api/admin/cj/sync', { method: 'POST' });
+                          const data = await res.json();
+                          setSuccessMessage(`Sync completed. Updated ${data.updated || 0} products.`);
+                          await fetchProducts();
+                          setTimeout(()=>setSuccessMessage(null), 3000);
+                        } catch (e) {
+                          setError('Sync failed');
+                        } finally {
+                          setIsLoading(false);
+                        }
+                      }}
+                      className="px-4 py-2 bg-black text-white rounded-lg"
+                    >Run Sync Now</button>
+                  </div>
                 </div>
               )}
             </>
