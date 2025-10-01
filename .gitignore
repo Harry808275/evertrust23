@@ -18,3 +18,14 @@ out/
 # IDE
 .vscode/
 
+# Security - Environment files
+.env
+.env.local
+.env.production
+.env.development
+
+# Security - API keys and secrets
+*.key
+*.pem
+secrets/
+
